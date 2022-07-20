@@ -30,6 +30,7 @@ height = disp.height
 image = Image.new('1', (width, height))
 draw = ImageDraw.Draw(image)
 font = ImageFont.truetype('fonte.ttf', 10)
+switcher = {1: "Quadrado",2: "Triângulo",3: "Círculo",4: "Estrela",}    
 
 draw.rectangle((0,0,width,height), outline=0, fill=0)
 draw.text((28, 12), 'FRANKIE UFRJ',  font=font, fill=255) #x de 0 a 127 e y de 0 a 63
@@ -199,7 +200,6 @@ def get_pic_and_rec(camera):
         return ["N/C", "0"]      
 
 def switch_class_name(class_number):
-    switcher = {1: "Quadrado",2: "Triângulo",3: "Círculo",4: "Estrela",}    
     return switcher.get(class_number)
 
 def train_wisard (wisard):

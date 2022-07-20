@@ -4,7 +4,7 @@ from __future__ import print_function
 import wisardpkg as wp
 import cv2
 import RPi.GPIO as GPIO
-#
+
 from time import *
 import time    #OKOKOOK
 import sys
@@ -30,13 +30,14 @@ height = disp.height
 image = Image.new('1', (width, height))
 draw = ImageDraw.Draw(image)
 font = ImageFont.truetype('fonte.ttf', 10)
+switcher = {1: "Triângulo",2: "Círculo",3: "Estrela",4: "Quadrado",}
 
 draw.rectangle((0,0,width,height), outline=0, fill=0)
 draw.text((28, 12), 'FRANKIE UFRJ',  font=font, fill=255) #x de 0 a 127 e y de 0 a 63
 draw.text((28, 36), 'IA na Escola', font=font, fill=255)
 disp.image(image)
 disp.display()
-disp.display()
+disp.display() # necessario??
 
 #Interações
 
@@ -45,6 +46,11 @@ def speak(text, speed):
         print(text[i], sep='', end='', flush=True);
         sleep(speed)
 
+confianca = 0.20
+velocidade_d = 75
+velocidade_e = 75
+distancia = 4
+tupla = 3
 
 #Câmera --------------------------------------
 def connect_cam(source):
@@ -85,7 +91,7 @@ def get_pic_and_rec(camera):
         else: #senão gerou uma imagem toda preta, diz o que reconheceu
             image_id_conf = recognize(Z)
             #Verifica confiança da imagem
-            if image_id_conf[1] < 0.20:
+            if image_id_conf[1] < confianca:
                 return ["N/A", "0"]
             else:
                 return recognize(Z)
@@ -93,7 +99,6 @@ def get_pic_and_rec(camera):
         return ["N/C", "0"]      
 
 def switch_class_name(class_number):
-    switcher = {1: "Triângulo",2: "Círculo",3: "Estrela",4: "Quadrado",}    
     return switcher.get(class_number)
 
 def train_wisard (wisard):
@@ -179,32 +184,32 @@ def lerUltrassom (trigger, echo):
     return ((stop - start) * 17000)
 
 def irFrente ():
-    motor_pwm1.start(75)#75
-    motor_pwm2.start(75)
+    motor_pwm1.start(velocidade_d)#75
+    motor_pwm2.start(velocidade_e)
     GPIO.output(17,1)
     GPIO.output(22,0)
     GPIO.output(27,1)
     GPIO.output(23,0)
     
 def irTras ():
-    motor_pwm1.start(100)#75
-    motor_pwm2.start(100)
+    motor_pwm1.start(velocidade_d)#75
+    motor_pwm2.start(velocidade_e)
     GPIO.output(17,0)
     GPIO.output(22,1)
     GPIO.output(27,0)
     GPIO.output(23,1)
     
 def irDireita ():
-    motor_pwm1.start(100)#75
-    motor_pwm2.start(100)
+    motor_pwm1.start(velocidade_d)#75
+    motor_pwm2.start(velocidade_e)
     GPIO.output(17,0)
     GPIO.output(22,0)#0
     GPIO.output(27,1)
     GPIO.output(23,0)
     
 def irEsquerda ():
-    motor_pwm1.start(100)#75
-    motor_pwm2.start(100)
+    motor_pwm1.start(velocidade_d)#75
+    motor_pwm2.start(velocidade_e)
     GPIO.output(17,1)
     GPIO.output(22,0)
     GPIO.output(27,0)
@@ -268,7 +273,7 @@ GPIO.output (TriggerDir, 0)
 GPIO.setup (EchoDir, GPIO.IN)
 
 #Distância para ser usado como comparação (ATEN
-maxDistancia = 4
+maxDistancia = distancia
 
 #Camera     
 cam_id = 0
@@ -276,7 +281,7 @@ cam = connect_cam(cam_id)
 print ('Câmera Ligada')
 
 #Wisard
-addressSize = 3
+addressSize = tupla
 ignoreZero  = False
 verbose = True
 returnConfidence = True
