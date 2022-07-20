@@ -32,6 +32,18 @@ draw = ImageDraw.Draw(image)
 font = ImageFont.truetype('fonte.ttf', 10)
 switcher = {1: "Triângulo",2: "Círculo",3: "Estrela",4: "Quadrado",}
 
+confianca = 0.20
+velocidade_d = 75 # velocidade direita
+velocidade_e = 75 # velocidade esquerda
+distancia = 5 # distancia ate a imagem [5 a 10]
+tupla = 3 # numero de elementos da tupla [3 a 8]
+time_e = 1
+time_d = 1
+time_f = 2
+time_t = 1
+n_classes = len(switcher) # numero de formas
+n_imagens = 10 # numero de imagens para treino de cada forma
+
 draw.rectangle((0,0,width,height), outline=0, fill=0)
 draw.text((28, 12), 'FRANKIE UFRJ',  font=font, fill=255) #x de 0 a 127 e y de 0 a 63
 draw.text((28, 36), 'IA na Escola', font=font, fill=255)
@@ -45,12 +57,6 @@ def speak(text, speed):
     for i in range(len(text)):
         print(text[i], sep='', end='', flush=True);
         sleep(speed)
-
-confianca = 0.20
-velocidade_d = 75
-velocidade_e = 75
-distancia = 4
-tupla = 3
 
 #Câmera --------------------------------------
 def connect_cam(source):
@@ -101,12 +107,12 @@ def get_pic_and_rec(camera):
 def switch_class_name(class_number):
     return switcher.get(class_number)
 
-def train_wisard (wisard):
+def train_wisard (wisard, n_classes, n_imagens):
     X=[]
     y=[]
     print ("Treinando WiSARD...")
-    for i in range(1,4):   # Alterar de acordo com o número de classes
-        for j in range(1,11):  # Alterar de acordo com o número de imagens de treino
+    for i in range(1,n_classes+1):   # Alterar de acordo com o número de classes
+        for j in range(1,n_imagens+1):  # Alterar de acordo com o número de imagens de treino
             print ("Carregado classe " + str(i) +" exemplar " + str(j))
             file = 'quatro_classes_scan/classe_'+str(i) +'/picture_' + str(j)+'.bmp'
             img = cv2.imread(file,0)
@@ -289,7 +295,7 @@ bleachingActivated = True
 wsd = wp.Wisard(addressSize, ignoreZero=ignoreZero, verbose=verbose,returnConfidence=returnConfidence,bleachingActivated=bleachingActivated)
 #print('verbose:',verbose)
 #print('bleaching:',bleachingActivated)
-train_wisard(wsd)
+train_wisard(wsd, n_classes, n_imagens)
 
 while True:
     
@@ -315,22 +321,22 @@ while True:
         if str( image_id_conf[0]) == "Triângulo":
             time.sleep (2)
             irFrente ()
-            time.sleep (2)
+            time.sleep (time_f)
             parar ()
         if str( image_id_conf[0]) == "Círculo":
             time.sleep (2)
             irDireita ()
-            time.sleep (1)
+            time.sleep (time_d)
             parar ()
         if str( image_id_conf[0]) == "Estrela":
             time.sleep (2)
             irEsquerda ()
-            time.sleep (1)
+            time.sleep (time_e)
             parar ()
         #if str( image_id_conf[0]) == "Estrela":
         #   time.sleep (2)
         #    irTras ()
-        #    time.sleep (1)
+        #    time.sleep (time_t)
         #    parar ()
         time.sleep (5.0)
         resultado = 999

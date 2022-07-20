@@ -31,6 +31,17 @@ image = Image.new('1', (width, height))
 draw = ImageDraw.Draw(image)
 font = ImageFont.truetype('fonte.ttf', 10)
 switcher = {1: "Triângulo",2: "Estrela"}
+confianca = 0.20
+velocidade_d = 75 # velocidade direita
+velocidade_e = 75 # velocidade esquerda
+distancia = 5 # distancia ate a imagem [5 a 10]
+tupla = 3 # numero de elementos da tupla [3 a 8]
+time_e = 1
+time_d = 1
+time_f = 2
+time_t = 1
+n_classes = len(switcher) # numero de formas
+n_imagens = 10 # numero de imagens para treino de cada forma
 
 draw.rectangle((0,0,width,height), outline=0, fill=0)
 draw.text((28, 12), 'FRANKIE UFRJ',  font=font, fill=255) #x de 0 a 127 e y de 0 a 63
@@ -45,12 +56,6 @@ def speak(text, speed):
     for i in range(len(text)):
         print(text[i], sep='', end='', flush=True);
         sleep(speed)
-
-confianca = 0.20
-velocidade_d = 75
-velocidade_e = 75
-distancia = 4
-tupla = 3
 
 #Câmera --------------------------------------
 def connect_cam(source):
@@ -289,7 +294,7 @@ bleachingActivated = True
 wsd = wp.Wisard(addressSize, ignoreZero=ignoreZero, verbose=verbose,returnConfidence=returnConfidence,bleachingActivated=bleachingActivated)
 #print('verbose:',verbose)
 #print('bleaching:',bleachingActivated)
-train_wisard(wsd)
+train_wisard(wsd, n_classes, n_imagens)
 
 while True:
     
